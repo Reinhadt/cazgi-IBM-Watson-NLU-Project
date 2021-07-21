@@ -10,6 +10,19 @@ app.use(express.static('client'))
 const cors_app = require('cors');
 app.use(cors_app());
 
+function getAnalyzeParams(type, toAnalyze, param) {
+    const baseObject = {
+        'features': {
+            'entities': {
+                'limit': 1,
+            },
+        },
+    };
+    baseObject[type] = param
+    baseObject.features.entities[toAnalyze] = true;
+    return baseObject;
+}
+
 function getNLUInstance() {
     let api_key = process.env.API_KEY;
     let api_url = process.env.API_URL;
@@ -30,98 +43,51 @@ app.get("/", (req, res) => {
 });
 
 app.get("/url/emotion", (req, res) => {
-    const analyzeParams = {
-        'url': req.query.url,
-        'features': {
-            'entities': {
-                'emotion': true,
-                'limit': 2,
-            },
-            'keywords': {
-                'emotion': true,
-                'limit': 2,
-            },
-        },
-    };
+    const analyzeParams = getAnalyzeParams('url', 'emotion', req.query.url);
     getNLUInstance().analyze(analyzeParams).then((results) => {
         const analisis = JSON.stringify(results);
         const { result } = JSON.parse(analisis);
-        return res.send(result);
+        return res.send(result.entities[0].emotion);
     }).catch((error) => {
         return error;
     });
 });
 
 app.get("/url/sentiment", (req, res) => {
-    const analyzeParams = {
-        'url': req.query.url,
-        'features': {
-            'entities': {
-                'sentiment': true,
-                'limit': 2,
-            },
-            'keywords': {
-                'sentiment': true,
-                'limit': 2,
-            },
-        },
-    };
+    const analyzeParams = getAnalyzeParams('url', 'sentiment', req.query.url);
     getNLUInstance().analyze(analyzeParams).then((results) => {
         const analisis = JSON.stringify(results);
         const { result } = JSON.parse(analisis);
-        return res.send(result);
+        return res.send(result.entities[0].sentiment);
     }).catch((error) => {
         return error;
     });
 });
 
 app.get("/text/emotion", (req, res) => {
-    const analyzeParams = {
-        'text': req.query.text,
-        'features': {
-            'entities': {
-                'emotion': true,
-                'limit': 2,
-            },
-            'keywords': {
-                'emotion': true,
-                'limit': 2,
-            },
-        },
-    };
+    const analyzeParams = getAnalyzeParams('text', 'emotion', req.query.text);
     getNLUInstance().analyze(analyzeParams).then((results) => {
         const analisis = JSON.stringify(results);
         const { result } = JSON.parse(analisis);
-        return res.send(result);
+        return res.send(result.entities[0].emotion);
     }).catch((error) => {
         return error;
     });
 });
 
 app.get("/text/sentiment", (req, res) => {
-    const analyzeParams = {
-        'text': req.query.text,
-        'features': {
-            'entities': {
-                'sentiment': true,
-                'limit': 2,
-            },
-            'keywords': {
-                'sentiment': true,
-                'limit': 2,
-            },
-        },
-    };
+    const analyzeParams = getAnalyzeParams('text', 'sentiment', req.query.text);
+    console.log(analyzeParams);
     getNLUInstance().analyze(analyzeParams).then((results) => {
         const analisis = JSON.stringify(results);
         const { result } = JSON.parse(analisis);
-        return res.send(result);
+        return res.send(result.entities[0].sentiment);
     }).catch((error) => {
         return error;
     });
 });
 
-let server = app.listen(8080, () => {
+let server = app.listen(8888, () => {
     console.log('Listening', server.address().port)
 })
 

@@ -47,15 +47,15 @@ class App extends React.Component {
     ret.then((response)=>{
 
       //Include code here to check the sentiment and fomrat the data accordingly
-
-      this.setState({sentimentOutput:response.data});
-      let output = response.data;
-      if(response.data === "positive") {
-        output = <div style={{color:"green",fontSize:20}}>{response.data}</div>
-      } else if (response.data === "negative"){
-        output = <div style={{color:"red",fontSize:20}}>{response.data}</div>
+      const {label} = response.data;
+      this.setState({sentimentOutput:label});
+      let output = label;
+      if(label === "positive") {
+        output = <div style={{color:"green",fontSize:20}}>{label}</div>
+      } else if (label === "negative"){
+        output = <div style={{color:"red",fontSize:20}}>{label}</div>
       } else {
-        output = <div style={{color:"yellow",fontSize:20}}>{response.data}</div>
+        output = <div style={{color:"yellow",fontSize:20}}>{label}</div>
       }
       this.setState({sentimentOutput:output});
     });
